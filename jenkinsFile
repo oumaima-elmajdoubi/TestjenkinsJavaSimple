@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Compile') {
+            steps {
+                sh 'javac src/Main.java'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'javac -cp .:junit-4.13.1.jar src/MainTest.java'
+                sh 'java -cp .:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
+            }
+        }
+    }
+}
