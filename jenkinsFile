@@ -2,23 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('List files') {
             steps {
-                // Compiler le fichier Main.java
-                sh 'javac src/Main.java'
+                bat 'dir'
+            }
+        }
+        stage('Compile') {
+            steps {
+                bat 'javac -d out src/Main.java'
             }
         }
         stage('Test') {
             steps {
-                // Compiler et exécuter les tests unitaires
-                sh 'javac -cp .:junit-4.13.1.jar src/MainTest.java'
-                sh 'java -cp .:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
+                bat 'javac -cp .;junit-4.13.1.jar -d out src/MainTest.java'
+                bat 'java -cp out;:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
             }
         }
         stage('Run') {
             steps {
-                // Exécuter le programme Java
-                sh 'java -cp src Main'
+                bat 'java -cp out Main'
             }
         }
     }
