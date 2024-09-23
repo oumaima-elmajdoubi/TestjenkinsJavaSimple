@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                bat 'javac -classpath lib/junit-4.13.1.jar;lib/junit-jupiter-5.8.1.jar;lib/junit-jupiter-api-5.8.1.jar;lib/junit-jupiter-engine-5.8.1.jar;lib/junit-jupiter-params-5.8.1.jar;lib/junit-platform-commons-1.8.1.jar;lib/junit-platform-engine-1.8.1.jar;lib/opentest4j-1.2.0.jar -d out src/MainTest.java'
+                bat 'java -classpath lib/* -d out src/MainTest.java'
                 bat 'java -cp out;:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
             }
         }
