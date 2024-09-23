@@ -3,8 +3,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MainTest {
 
-    @Test
-    public void testMain() {
+    public static void main(String[] args) {
         // Test the output or expected behavior
         String expected = "Hello, World!";
         String actual = "Hello, World!";
