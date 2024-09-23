@@ -1,16 +1,37 @@
 pipeline {
     agent any
+
     stages {
-        stage('Compile') {
+        stage('Build') {
             steps {
+                // Compiler le fichier Main.java
                 sh 'javac src/Main.java'
             }
         }
         stage('Test') {
             steps {
+                // Compiler et exécuter les tests unitaires
                 sh 'javac -cp .:junit-4.13.1.jar src/MainTest.java'
                 sh 'java -cp .:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
             }
+        }
+        stage('Run') {
+            steps {
+                // Exécuter le programme Java
+                sh 'java -cp src Main'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'Build and tests were successful!'
+        }
+        failure {
+            echo 'There was an error in the pipeline.'
         }
     }
 }
