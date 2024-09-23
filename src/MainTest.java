@@ -4,6 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MainTest {
     @Test
     public void testMain() {
-        assertEquals("Hello, World!", "Hello, World!");
+        assert("Hello, World!" == "Hello, World!");
     }
 }
