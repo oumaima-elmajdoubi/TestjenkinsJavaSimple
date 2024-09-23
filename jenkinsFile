@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                bat 'javac -cp .;junit-4.13.1.jar -d out src/MainTest.java'
+                bat 'javac -cp lib -d out src/MainTest.java'
                 bat 'java -cp out;:junit-4.13.1.jar org.junit.runner.JUnitCore MainTest'
             }
         }
