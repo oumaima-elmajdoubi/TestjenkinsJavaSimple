@@ -27,6 +27,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed.'
+            archiveArtifacts artifacts: 'out/production/**.class', allowEmptyArchive: true
         }
         success {
             echo 'Build and tests were successful!'
