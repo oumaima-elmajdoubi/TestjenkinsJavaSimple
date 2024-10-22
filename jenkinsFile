@@ -22,6 +22,28 @@ pipeline {
                 bat 'java -cp out Main'
             }
         }
+        // Ajout d'une nouvelle étape pour le scan ZAP
+        stage('ZAP Security Scan') {
+            steps {
+                // Assure-toi que ZAP est démarré et prêt à accepter des commandes pour le scan
+                script {
+                    // Lance ZAP en mode daemon, si ce n'est pas déjà fait
+                    bat 'zap.bat -daemon -host localhost -port 8095 -config api.disablekey=true'
+                    // URL de l'application à scanner
+                    def appUrl = 'http://your-application-url'
+                    // Démarrer le scan actif de ZAP
+                    bat "curl http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true&inScopeOnly=false&scanPolicyName=Default+Policy&method=NULL&postData=NULL"
+                    // Attendre que le scan soit complet (ajuster le temps selon les besoins)
+                    sleep(300)
+                }
+            }
+            post {
+                always {
+                    // Arrêter ZAP après le scan
+                    bat 'zap.bat -cmd -quickprogress -newsession nil'
+                }
+            }
+        }
     }
 
     post {
@@ -31,6 +53,7 @@ pipeline {
         }
         success {
             echo 'Build and tests were successful!'
+            echo 'Security scan completed.'
         }
         failure {
             echo 'There was an error in the pipeline.'
