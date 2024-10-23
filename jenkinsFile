@@ -25,22 +25,23 @@ pipeline {
         // Ajout d'une nouvelle étape pour le scan ZAP
         stage('ZAP Security Scan') {
             steps {
-                // Assure-toi que ZAP est démarré et prêt à accepter des commandes pour le scan
                 script {
-                    // Lance ZAP en mode daemon, si ce n'est pas déjà fait
+                    // Lancer ZAP en mode daemon
                     bat 'zap.bat -daemon -host localhost -port 8095 -config api.disablekey=true'
                     // URL de l'application à scanner
-                    def appUrl = 'http://your-application-url'
+                    def appUrl = 'http://your-application-url'  // Remplace par l'URL réelle de ton application
                     // Démarrer le scan actif de ZAP
                     bat "curl http://localhost:8095/JSON/ascan/action/scan/?url=${appUrl}&recurse=true&inScopeOnly=false&scanPolicyName=Default+Policy&method=NULL&postData=NULL"
-                    // Attendre que le scan soit complet (ajuster le temps selon les besoins)
+                    // Attendre que le scan se termine (tu peux ajuster le temps selon les besoins)
                     sleep(300)
                 }
             }
             post {
                 always {
+                    // Optionnel : Récupérer un rapport ZAP au format HTML ou autre
+                    bat 'curl http://localhost:8095/OTHER/core/other/htmlreport/ > zap_report.html'
                     // Arrêter ZAP après le scan
-                    bat 'zap.bat -cmd -quickprogress -newsession nil'
+                    bat 'zap.bat -cmd -shutdown'
                 }
             }
         }
@@ -50,13 +51,14 @@ pipeline {
         always {
             echo 'Pipeline completed.'
             archiveArtifacts artifacts: 'out/*.class', allowEmptyArchive: true
+            // Archiver le rapport ZAP
+            archiveArtifacts artifacts: 'zap_report.html', allowEmptyArchive: true
         }
         success {
-            echo 'Build and tests were successful!'
-            echo 'Security scan completed.'
+            echo 'Build, tests, et scan de sécurité réussis !'
         }
         failure {
-            echo 'There was an error in the pipeline.'
+            echo 'Il y a eu une erreur dans le pipeline.'
         }
     }
 }
